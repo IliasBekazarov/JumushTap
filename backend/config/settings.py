@@ -92,3 +92,10 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+# PythonAnywhere security
+CSRF_TRUSTED_ORIGINS = [
+    'https://jumushtap001.pythonanywhere.com',
+    'https://*.vercel.app',
+]

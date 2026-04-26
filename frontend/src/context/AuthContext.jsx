@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
-export const BASE_URL = 'http://172.17.105.76:8000';
+export const BASE_URL = 'https://jumushtap001.pythonanywhere.com';
 
 // All API calls use /api prefix automatically
 export const api = axios.create({ baseURL: `${BASE_URL}/api` });
