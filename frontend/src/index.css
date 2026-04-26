@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* Enable class-based dark mode for Tailwind v4 */
+@variant dark (&:where(.dark, .dark *));
+
+* { font-family: 'Outfit', sans-serif; box-sizing: border-box; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+.card-enter { animation: cardIn 0.3s ease-out; }
+@keyframes cardIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.fade-in { animation: fadeIn 0.4s ease-out; }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.toast-anim { animation: toastSlide 0.3s ease-out; }
+@keyframes toastSlide { from { transform:translateY(-20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:#6366f1; border-radius:3px; }
+
+@media (max-width:640px) { input, textarea, select { font-size:16px !important; } }
