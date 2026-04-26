@@ -1,8 +1,8 @@
 import sys
 import os
 
-# Adjust this path to your actual PythonAnywhere username
-path = '/home/IliasBekazarov/jumush.tap/backend'
+# ✅ jumushtap001 — сиздин username
+path = '/home/jumushtap001/JumushTap/backend'
 if path not in sys.path:
     sys.path.insert(0, path)
 
