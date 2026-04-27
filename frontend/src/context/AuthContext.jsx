@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(
-    () => localStorage.getItem('darkMode') !== 'false'
+    () => localStorage.getItem('darkMode') === 'true'
   );
 
   const applyTheme = useCallback((dark) => {

@@ -65,7 +65,7 @@ const PostTab = memo(function PostTab({ showToast, onPosted }) {
 
   const up = (k, v) => setForm(p => ({ ...p, [k]: v }));
 
-  const inp = "w-full bg-slate-900/60 dark:bg-slate-900/60 bg-gray-50 border border-indigo-500/30 dark:border-indigo-500/30 border-gray-300 rounded-xl px-4 py-2.5 text-sm text-white dark:text-white text-slate-800 placeholder-slate-500 dark:placeholder-slate-500 placeholder-gray-400 focus:border-indigo-400 focus:outline-none transition-colors outline-none";
+  const inp = "w-full bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-indigo-500/30 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:border-indigo-400 focus:outline-none transition-colors outline-none";
   const lbl = "block text-xs font-medium text-indigo-300 dark:text-indigo-300 text-indigo-700 mb-1.5 uppercase tracking-wide";
 
   const handleSubmit = async (e) => {
@@ -267,7 +267,7 @@ function ProfileTab({ showToast }) {
     finally { setSaving(false); }
   };
 
-  const inp = "w-full bg-slate-900/60 dark:bg-slate-900/60 bg-gray-50 border border-indigo-500/30 dark:border-indigo-500/30 border-gray-200 rounded-xl px-4 py-2.5 text-white dark:text-white text-slate-800 focus:border-indigo-400 focus:outline-none transition-colors text-sm outline-none";
+  const inp = "w-full bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-indigo-500/30 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:border-indigo-400 focus:outline-none transition-colors outline-none";
 
   return (
     <div className="overflow-y-auto p-4 pb-8">

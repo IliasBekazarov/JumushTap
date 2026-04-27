@@ -37,7 +37,7 @@ export default function EditModal({ job, onClose, onSaved, showToast }) {
     }
   };
 
-  const inp = "w-full bg-slate-900/70 border border-indigo-500/30 rounded-xl px-4 py-2.5 text-slate-100 placeholder-slate-500 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/30 transition-colors text-sm outline-none";
+  const inp = "w-full bg-white dark:bg-slate-900/70 border border-gray-300 dark:border-indigo-500/30 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/30 transition-colors outline-none";
   const lbl = "block text-xs font-medium text-indigo-300 mb-1.5 uppercase tracking-wide";
 
   return (
