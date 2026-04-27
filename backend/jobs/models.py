@@ -17,6 +17,7 @@ class Job(models.Model):
     salary_from = models.IntegerField(null=True, blank=True)
     salary_to = models.IntegerField(null=True, blank=True)
     profile_type = models.CharField(max_length=20, choices=PROFILE_TYPE_CHOICES, default='employer')
+    active = models.BooleanField(default=True)
     views_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateField(null=True, blank=True)

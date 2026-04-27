@@ -23,7 +23,7 @@ const SearchTab = memo(function SearchTab({ jobs, loading, onSearch, onBookmark,
       <form onSubmit={handleSearch} className="px-3 pt-3 pb-2 shrink-0">
         <div className="flex gap-2">
           <input
-            className="flex-1 bg-slate-800/60 dark:bg-slate-800/60 bg-gray-100 border border-indigo-500/30 dark:border-indigo-500/30 border-gray-300 rounded-xl px-4 py-2.5 text-sm text-white dark:text-white text-slate-800 placeholder-slate-500 dark:placeholder-slate-500 placeholder-gray-400 focus:border-indigo-400 focus:outline-none transition-colors"
+            className="flex-1 bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-indigo-500/30 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:border-indigo-400 focus:outline-none transition-colors"
             placeholder="Вакансия издөө..."
             value={q}
             onChange={e => setQ(e.target.value)}

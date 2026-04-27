@@ -19,7 +19,7 @@ class JobSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'user', 'description', 'whatsapp', 'phone',
             'address', 'is_negotiable', 'salary_from', 'salary_to',
-            'profile_type', 'views_count', 'avg_rating', 'is_bookmarked',
+            'profile_type', 'active', 'views_count', 'avg_rating', 'is_bookmarked',
             'created_at', 'expires_at'
         ]
 
@@ -42,7 +42,7 @@ class JobCreateSerializer(serializers.ModelSerializer):
         fields = [
             'description', 'whatsapp', 'phone', 'address',
             'is_negotiable', 'salary_from', 'salary_to',
-            'profile_type', 'expires_at'
+            'profile_type', 'active', 'expires_at'
         ]
 
     def create(self, validated_data):
