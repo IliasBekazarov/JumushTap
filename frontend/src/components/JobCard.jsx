@@ -118,12 +118,20 @@ const JobCard = memo(function JobCard({ job, mode = 'search', onBookmark, onDele
           {/* My jobs controls */}
           {mode === 'my' && (
             <div className="flex items-center gap-1.5 shrink-0">
-              <button onClick={e => { e.stopPropagation(); onToggleActive?.(job); }}
-                className="dark:text-slate-400 text-gray-400 hover:text-green-400 transition-colors"
-                title={isInactive ? 'Активдештирүү' : 'Жашыруу'}>
+              {/* Active toggle button */}
+              <button
+                onClick={e => { e.stopPropagation(); onToggleActive?.(job); }}
+                className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium transition-all duration-200 ${
+                  isInactive
+                    ? 'bg-gray-200 dark:bg-slate-700 text-gray-500 dark:text-slate-400 hover:bg-green-100 dark:hover:bg-green-900/30 hover:text-green-600 dark:hover:text-green-400'
+                    : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400'
+                }`}
+                title={isInactive ? 'Активдештирүү — издөөдө көрүнөт' : 'Жашыруу — издөөдөн алып салынат'}
+              >
                 {isInactive
-                  ? <ToggleLeft size={18} />
-                  : <ToggleRight size={18} className="text-green-400" />}
+                  ? <><ToggleLeft size={15} /><span>Жашык</span></>
+                  : <><ToggleRight size={15} /><span>Активдүү</span></>
+                }
               </button>
               <button onClick={e => { e.stopPropagation(); onEdit?.(job); }}
                 className="dark:text-slate-400 text-gray-400 hover:text-indigo-400 transition-colors">

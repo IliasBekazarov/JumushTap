@@ -165,8 +165,9 @@ function MyJobsTab({ showToast }) {
   const handleToggleActive = async (job) => {
     try {
       await api.patch(`/jobs/${job.id}/`, { active: !job.active });
+      showToast(job.active ? 'Вакансия жашырылды 🙈' : 'Вакансия активдүү! 🟢');
       fetch();
-    } catch {}
+    } catch { showToast('Ката болду'); }
   };
 
   return (

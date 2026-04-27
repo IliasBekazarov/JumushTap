@@ -19,6 +19,11 @@ def jobs_list(request):
             )
         if profile_type:
             jobs = jobs.filter(profile_type=profile_type)
+        # Активдүү эмес вакансияларды жашыруу (owner өзү гана көрөт)
+        if request.user.is_authenticated:
+            jobs = jobs.filter(Q(active=True) | Q(user=request.user))
+        else:
+            jobs = jobs.filter(active=True)
         serializer = JobSerializer(jobs, many=True, context={'request': request})
         return Response(serializer.data)
 
@@ -32,7 +37,7 @@ def jobs_list(request):
     return Response(serializer.errors, status=400)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
 def job_detail(request, pk):
     try:
         job = Job.objects.select_related('user').prefetch_related('ratings', 'bookmarked_by').get(pk=pk)
@@ -53,6 +58,19 @@ def job_detail(request, pk):
             serializer.save()
             return Response(JobSerializer(job, context={'request': request}).data)
         return Response(serializer.errors, status=400)
+
+    if request.method == 'PATCH':
+        # active toggle үчүн (же башка жеке талааларды жаңыртуу)
+        serializer = JobCreateSerializer(job, data=request.data, partial=True, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            # active сыяктуу JobCreateSerializer'де жок талааларды түздөн-түз сактоо
+            for field, value in request.data.items():
+                if hasattr(job, field):
+                    setattr(job, field, value)
+            job.save()
+        return Response(JobSerializer(job, context={'request': request}).data)
 
     job.delete()
     return Response(status=204)
