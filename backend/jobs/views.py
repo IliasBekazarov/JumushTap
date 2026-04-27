@@ -19,11 +19,8 @@ def jobs_list(request):
             )
         if profile_type:
             jobs = jobs.filter(profile_type=profile_type)
-        # Активдүү эмес вакансияларды жашыруу (owner өзү гана көрөт)
-        if request.user.is_authenticated:
-            jobs = jobs.filter(Q(active=True) | Q(user=request.user))
-        else:
-            jobs = jobs.filter(active=True)
+        # Издөө бетинде АКТИВДҮҮ вакансиялар гана (owner'дин жашык вакансиясы да жашырылат)
+        jobs = jobs.filter(active=True)
         serializer = JobSerializer(jobs, many=True, context={'request': request})
         return Response(serializer.data)
 
@@ -35,6 +32,15 @@ def jobs_list(request):
         job = serializer.save()
         return Response(JobSerializer(job, context={'request': request}).data, status=201)
     return Response(serializer.errors, status=400)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def my_jobs(request):
+    """Менин вакансияларым — активдүү жана жашык баарын кайтарат"""
+    jobs = Job.objects.filter(user=request.user).select_related('user').prefetch_related('ratings', 'bookmarked_by')
+    serializer = JobSerializer(jobs, many=True, context={'request': request})
+    return Response(serializer.data)
 
 
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
