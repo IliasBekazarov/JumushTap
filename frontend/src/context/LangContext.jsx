@@ -61,12 +61,38 @@ const translations = {
     language: 'Тил',
 
     // JobCard
-    views: 'көрүү',
-    nego: 'Договорной',
+    views: 'көрүлдү',
+    nego: 'Договордук',
     edit: 'Өзгөртүү',
     delete: 'Жок кылуу',
-    copy: 'Көчүрүлдү!',
+    copy: 'Көчүрүлдү! 📋',
     error: 'Ката болду',
+    call: 'Чалуу',
+    share: 'Бөлүшүү',
+    shareTitle: 'Бөлүшүү',
+    shareWa: 'WhatsApp аркылуу жөнөтүү',
+    shareTg: 'Telegram',
+    shareCopy: 'Текст көчүрүү',
+    employer: 'Иш берүүчү',
+    seeker: 'Иш издейт',
+    salary: 'Маяна',
+    rating: 'Баа',
+
+    // EditModal
+    editTitle: 'Вакансияны өзгөртүү',
+    editSaved: 'Вакансия жаңыланды! ✅',
+    cancel: 'Жок кылуу',
+    salaryNego: 'Келишим боюнча',
+    priceFrom: 'Баадан',
+    priceTo: 'Баага чейин',
+
+    // Header
+    darkMode: 'Жарык режим',
+    lightMode: 'Караңгы режим',
+    logoutHeader: 'Чыгуу?',
+    bookmarkAdded: 'Сакталды ⭐',
+    rateGiven: 'Баа берилди',
+    loginRequired: 'Катталыңыз',
   },
 
   ru: {
@@ -133,8 +159,34 @@ const translations = {
     nego: 'Договорная',
     edit: 'Редактировать',
     delete: 'Удалить',
-    copy: 'Скопировано!',
+    copy: 'Скопировано! 📋',
     error: 'Ошибка',
+    call: 'Позвонить',
+    share: 'Поделиться',
+    shareTitle: 'Поделиться',
+    shareWa: 'Отправить в WhatsApp',
+    shareTg: 'Telegram',
+    shareCopy: 'Скопировать текст',
+    employer: 'Работодатель',
+    seeker: 'Ищу работу',
+    salary: 'Зарплата',
+    rating: 'Оценка',
+
+    // EditModal
+    editTitle: 'Редактировать вакансию',
+    editSaved: 'Вакансия обновлена! ✅',
+    cancel: 'Отмена',
+    salaryNego: 'Договорная зарплата',
+    priceFrom: 'Зарплата от',
+    priceTo: 'Зарплата до',
+
+    // Header
+    darkMode: 'Светлый режим',
+    lightMode: 'Тёмный режим',
+    logoutHeader: 'Выйти?',
+    bookmarkAdded: 'Сохранено ⭐',
+    rateGiven: 'Оценка поставлена',
+    loginRequired: 'Авторизуйтесь',
   },
 };
 

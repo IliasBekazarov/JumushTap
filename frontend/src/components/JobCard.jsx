@@ -4,6 +4,7 @@ import {
   Star, Eye, Pencil, Trash2, ToggleLeft, ToggleRight, X, Copy,
 } from 'lucide-react';
 import { useAuth, api } from '../context/AuthContext';
+import { useLang } from '../context/LangContext';
 
 function StarRating({ rating = 0, jobId, onRate, readonly = false }) {
   return (
@@ -21,35 +22,36 @@ function StarRating({ rating = 0, jobId, onRate, readonly = false }) {
 }
 
 function ShareModal({ job, onClose }) {
+  const { t } = useLang();
   const siteUrl = window.location.origin;
   const salary = job.is_negotiable
-    ? 'Договорная'
+    ? t.nego
     : `${(job.salary_from || 0).toLocaleString()} - ${(job.salary_to || 0).toLocaleString()} сом`;
   const text = `👋 JumushTap'та жакшы вакансия бар!\n\n🔥 ${job.description}\n\n💰 ${salary}\n\n📍 ${job.address || ''}\n\n📱 ${job.phone || ''}\n\n🔗 ${siteUrl}`;
   const waNum = (job.whatsapp || job.phone || '').replace(/\D/g, '');
 
-  const copy = () => navigator.clipboard.writeText(text).then(() => alert('Скопировано! 📋'));
+  const copy = () => navigator.clipboard.writeText(text).then(() => alert(t.copy));
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="dark:bg-slate-800 bg-white border dark:border-indigo-500/50 border-gray-200 rounded-2xl p-6 max-w-sm w-full shadow-2xl"
         onClick={e => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold dark:text-white text-slate-800 text-lg">Бөлүшүү</h3>
+          <h3 className="font-bold dark:text-white text-slate-800 text-lg">{t.shareTitle}</h3>
           <button onClick={onClose}><X size={18} className="dark:text-slate-400 text-gray-500 hover:text-red-400" /></button>
         </div>
         <div className="flex flex-col gap-3">
           <a href={`https://wa.me/?text=${encodeURIComponent(text)}`} target="_blank" rel="noreferrer"
             className="flex items-center gap-3 bg-green-600 hover:bg-green-500 text-white rounded-xl px-4 py-3 font-medium transition-colors">
-            <MessageCircle size={18} /> WhatsApp аркылуу жөнөтүү
+            <MessageCircle size={18} /> {t.shareWa}
           </a>
           <a href={`https://t.me/share/url?url=${encodeURIComponent(siteUrl)}&text=${encodeURIComponent(text)}`} target="_blank" rel="noreferrer"
             className="flex items-center gap-3 bg-blue-500 hover:bg-blue-400 text-white rounded-xl px-4 py-3 font-medium transition-colors">
-            <Share2 size={18} /> Telegram
+            <Share2 size={18} /> {t.shareTg}
           </a>
           <button onClick={copy}
             className="flex items-center gap-3 dark:bg-slate-700 bg-gray-100 dark:hover:bg-slate-600 hover:bg-gray-200 dark:text-white text-slate-700 rounded-xl px-4 py-3 font-medium transition-colors">
-            <Copy size={18} /> Текст көчүрүү
+            <Copy size={18} /> {t.shareCopy}
           </button>
         </div>
       </div>
@@ -59,6 +61,7 @@ function ShareModal({ job, onClose }) {
 
 const JobCard = memo(function JobCard({ job, mode = 'search', onBookmark, onDelete, onEdit, onToggleActive, onRate, showToast }) {
   const { BASE_URL } = useAuth();
+  const { t } = useLang();
   const [shareOpen, setShareOpen] = useState(false);
 
   const waNum = (job.whatsapp || '').replace(/\D/g, '');
@@ -96,7 +99,7 @@ const JobCard = memo(function JobCard({ job, mode = 'search', onBookmark, onDele
               </span>
               <span className="text-xs bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full">
                 {(job.profile_type === 'employer' || job.user_role === 'employer')
-                  ? '🏢 Иш берүүчү' : '🔍 Иш издейт'}
+                  ? `🏢 ${t.employer}` : `🔍 ${t.seeker}`}
               </span>
             </div>
             <div className="flex items-center gap-3 mt-0.5 text-xs dark:text-slate-400 text-slate-500 flex-wrap">
@@ -118,7 +121,6 @@ const JobCard = memo(function JobCard({ job, mode = 'search', onBookmark, onDele
           {/* My jobs controls */}
           {mode === 'my' && (
             <div className="flex items-center gap-1.5 shrink-0">
-              {/* Active toggle button */}
               <button
                 onClick={e => { e.stopPropagation(); onToggleActive?.(job); }}
                 className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium transition-all duration-200 ${
@@ -126,19 +128,21 @@ const JobCard = memo(function JobCard({ job, mode = 'search', onBookmark, onDele
                     ? 'bg-gray-200 dark:bg-slate-700 text-gray-500 dark:text-slate-400 hover:bg-green-100 dark:hover:bg-green-900/30 hover:text-green-600 dark:hover:text-green-400'
                     : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400'
                 }`}
-                title={isInactive ? 'Активдештирүү — издөөдө көрүнөт' : 'Жашыруу — издөөдөн алып салынат'}
+                title={isInactive ? t.activateTitle : t.hideTitle}
               >
                 {isInactive
-                  ? <><ToggleLeft size={15} /><span>Жашык</span></>
-                  : <><ToggleRight size={15} /><span>Активдүү</span></>
+                  ? <><ToggleLeft size={15} /><span>{t.inactive}</span></>
+                  : <><ToggleRight size={15} /><span>{t.active}</span></>
                 }
               </button>
               <button onClick={e => { e.stopPropagation(); onEdit?.(job); }}
-                className="dark:text-slate-400 text-gray-400 hover:text-indigo-400 transition-colors">
+                className="dark:text-slate-400 text-gray-400 hover:text-indigo-400 transition-colors"
+                title={t.edit}>
                 <Pencil size={16} />
               </button>
               <button onClick={e => { e.stopPropagation(); onDelete?.(job); }}
-                className="dark:text-slate-400 text-gray-400 hover:text-red-400 transition-colors">
+                className="dark:text-slate-400 text-gray-400 hover:text-red-400 transition-colors"
+                title={t.delete}>
                 <Trash2 size={16} />
               </button>
             </div>
@@ -152,10 +156,10 @@ const JobCard = memo(function JobCard({ job, mode = 'search', onBookmark, onDele
 
         {/* Salary */}
         <div className="inline-flex items-center gap-1.5 bg-indigo-500/10 border border-indigo-400/20 rounded-xl px-3 py-1.5 mb-3">
-          <span className="text-xs dark:text-slate-400 text-slate-500">Маяна:</span>
+          <span className="text-xs dark:text-slate-400 text-slate-500">{t.salary}:</span>
           <span className="text-sm font-semibold text-indigo-400">
             {(job.is_negotiable || job.price_negotiable)
-              ? 'Договорная'
+              ? t.nego
               : `${(job.salary_from || job.price_from || 0).toLocaleString()} – ${(job.salary_to || job.price_to || 0).toLocaleString()} сом`}
           </span>
         </div>
@@ -163,13 +167,13 @@ const JobCard = memo(function JobCard({ job, mode = 'search', onBookmark, onDele
         {/* Rating & views */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-xs dark:text-slate-500 text-gray-400">Баа:</span>
+            <span className="text-xs dark:text-slate-500 text-gray-400">{t.rating}:</span>
             <StarRating rating={job.avg_rating || job.rating || 0} jobId={job.id}
               onRate={onRate} readonly={mode !== 'search'} />
           </div>
           <div className="flex items-center gap-1 text-xs dark:text-slate-500 text-gray-400">
             <Eye size={12} />
-            <span>{job.views_count || job.views || 0} көрүлдү</span>
+            <span>{job.views_count || job.views || 0} {t.views}</span>
           </div>
         </div>
 
@@ -185,12 +189,12 @@ const JobCard = memo(function JobCard({ job, mode = 'search', onBookmark, onDele
           {phNum && (
             <a href={`tel:${job.phone}`} onClick={e => e.stopPropagation()}
               className="flex items-center gap-1.5 bg-blue-600/80 hover:bg-blue-500 text-white text-xs font-medium px-3 py-2 rounded-xl transition-colors">
-              <Phone size={14} /> Чалуу
+              <Phone size={14} /> {t.call}
             </a>
           )}
           <button onClick={e => { e.stopPropagation(); setShareOpen(true); }}
             className="flex items-center gap-1.5 bg-purple-600/80 hover:bg-purple-500 text-white text-xs font-medium px-3 py-2 rounded-xl transition-colors">
-            <Share2 size={14} /> Бөлүшүү
+            <Share2 size={14} /> {t.share}
           </button>
         </div>
       </div>

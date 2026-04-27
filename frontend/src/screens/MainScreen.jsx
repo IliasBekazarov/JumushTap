@@ -312,11 +312,7 @@ function ProfileTab({ showToast }) {
         </div>
 
         {/* Language toggle */}
-        <button onClick={toggleLang}
-          className="w-full flex items-center justify-center gap-2 dark:bg-slate-700/50 bg-gray-100 hover:bg-indigo-500/10 dark:text-slate-200 text-slate-700 rounded-xl py-2.5 font-medium transition-all mb-3 text-sm">
-          🌐 {t.language}: <span className="font-bold">{lang === 'ky' ? 'Кыргызча' : 'Русский'}</span>
-          <span className="text-indigo-400 ml-1">→ {lang === 'ky' ? 'Русский' : 'Кыргызча'}</span>
-        </button>
+        
 
         <button onClick={handleSave} disabled={saving}
           className="w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl py-3 font-bold transition-all disabled:opacity-60 mb-3">
@@ -335,7 +331,7 @@ function ProfileTab({ showToast }) {
 // ─── MAIN SCREEN ──────────────────────────────────────────────────────────────
 export default function MainScreen() {
   const { user, logout, darkMode, toggleTheme } = useAuth();
-  const { t } = useLang();
+  const { t, lang, toggleLang } = useLang();
   const [tab, setTab] = useState('search');
   const [toast, setToast] = useState('');
   const [jobs, setJobs] = useState([]);
@@ -397,6 +393,11 @@ export default function MainScreen() {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium dark:text-slate-300 text-slate-600 hidden sm:block">{user?.name}</span>
+          <button onClick={toggleLang}
+            className="p-2 rounded-xl dark:bg-slate-800 bg-gray-100 dark:text-slate-300 text-slate-600 hover:text-indigo-500 transition-colors"
+            title={t.language}>
+            {lang === 'ky' ? 'Кыргызча' : 'Русский'}
+          </button>
           <button onClick={toggleTheme}
             className="p-2 rounded-xl dark:bg-slate-800 bg-gray-100 dark:text-slate-300 text-slate-600 hover:text-indigo-500 transition-colors"
             title={darkMode ? 'Жарык режим' : 'Караңгы режим'}>
