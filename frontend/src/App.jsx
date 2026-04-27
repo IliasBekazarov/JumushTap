@@ -1,4 +1,5 @@
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { LangProvider } from './context/LangContext';
 import RegisterScreen from './screens/RegisterScreen';
 import MainScreen from './screens/MainScreen';
 import { Loader2 } from 'lucide-react';
@@ -16,7 +17,9 @@ function Root() {
 export default function App() {
   return (
     <AuthProvider>
-      <Root />
+      <LangProvider>
+        <Root />
+      </LangProvider>
     </AuthProvider>
   );
 }

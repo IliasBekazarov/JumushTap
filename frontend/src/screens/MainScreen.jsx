@@ -4,6 +4,7 @@ import {
   Sun, Moon, LogOut, Loader2, Camera,
 } from 'lucide-react';
 import { useAuth, api } from '../context/AuthContext';
+import { useLang } from '../context/LangContext';
 import JobCard from '../components/JobCard';
 import EditModal from '../components/EditModal';
 import Toast from '../components/Toast';
@@ -11,6 +12,7 @@ import Toast from '../components/Toast';
 // ─── SEARCH TAB ──────────────────────────────────────────────────────────────
 const SearchTab = memo(function SearchTab({ jobs, loading, onSearch, onBookmark, onRate, showToast }) {
   const [q, setQ] = useState('');
+  const { t } = useLang();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -24,7 +26,7 @@ const SearchTab = memo(function SearchTab({ jobs, loading, onSearch, onBookmark,
         <div className="flex gap-2">
           <input
             className="flex-1 bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-indigo-500/30 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:border-indigo-400 focus:outline-none transition-colors"
-            placeholder="Вакансия издөө..."
+            placeholder={t.searchPlaceholder}
             value={q}
             onChange={e => setQ(e.target.value)}
           />
@@ -40,7 +42,7 @@ const SearchTab = memo(function SearchTab({ jobs, loading, onSearch, onBookmark,
         {loading
           ? <div className="flex justify-center py-16"><Loader2 size={32} className="text-indigo-400 animate-spin" /></div>
           : jobs.length === 0
-            ? <div className="text-center py-16 text-slate-500 text-sm">Вакансия табылган жок</div>
+            ? <div className="text-center py-16 text-slate-500 text-sm">{t.noJobs}</div>
             : jobs.map(job => (
               <JobCard key={job.id} job={job} mode="search"
                 onBookmark={onBookmark} onRate={onRate} showToast={showToast} />
@@ -53,6 +55,7 @@ const SearchTab = memo(function SearchTab({ jobs, loading, onSearch, onBookmark,
 
 // ─── POST TAB ─────────────────────────────────────────────────────────────────
 const PostTab = memo(function PostTab({ showToast, onPosted }) {
+  const { t } = useLang();
   const [form, setForm] = useState({
     description: '', whatsapp: '', phone: '',
     address: '', is_negotiable: false, salary_from: '', salary_to: '',
@@ -67,7 +70,7 @@ const PostTab = memo(function PostTab({ showToast, onPosted }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.description.trim()) { showToast('Сүрөттөмө киргизиңиз'); return; }
+    if (!form.description.trim()) { showToast(t.description); return; }
     setSaving(true);
     try {
       await api.post('/jobs/', {
@@ -75,11 +78,11 @@ const PostTab = memo(function PostTab({ showToast, onPosted }) {
         salary_from: form.is_negotiable ? null : parseInt(form.salary_from) || 0,
         salary_to: form.is_negotiable ? null : parseInt(form.salary_to) || 0,
       });
-      showToast('Вакансия жарыяланды! 🎉');
+      showToast('🎉');
       setForm({ description: '', whatsapp: '', phone: '', address: '', is_negotiable: false, salary_from: '', salary_to: '', profile_type: 'employer' });
       onPosted();
     } catch {
-      showToast('Ката болду. Кайра аракет кылыңыз.');
+      showToast(t.error);
     } finally {
       setSaving(false);
     }
@@ -87,14 +90,14 @@ const PostTab = memo(function PostTab({ showToast, onPosted }) {
 
   return (
     <div className="flex-1 overflow-y-auto p-4 pb-8">
-      <h2 className="text-white dark:text-white text-slate-800 font-bold text-xl mb-5">Вакансия жарыялоо</h2>
+      <h2 className="text-white dark:text-white text-slate-800 font-bold text-xl mb-5">{t.postTitle}</h2>
       <div className="bg-slate-800/60 dark:bg-slate-800/60 bg-white border border-indigo-500/30 dark:border-indigo-500/30 border-gray-200 rounded-3xl p-5 shadow-xl">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Role selector */}
           <div>
-            <label className={lbl}>Ролуңуз</label>
+            <label className={lbl}>{t.postType}</label>
             <div className="flex gap-2">
-              {[['employer', '🏢 Иш берүүчү'], ['worker', '🔍 Иш издеген']].map(([v, l]) => (
+              {[['employer', `🏢 ${t.employer}`], ['worker', `🔍 ${t.seeker}`]].map(([v, l]) => (
                 <button key={v} type="button" onClick={() => up('profile_type', v)}
                   className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all border ${
                     form.profile_type === v
@@ -107,28 +110,28 @@ const PostTab = memo(function PostTab({ showToast, onPosted }) {
             </div>
           </div>
           <div>
-            <label className={lbl}>Сүрөттөмө</label>
+            <label className={lbl}>{t.description}</label>
             <textarea className={`${inp} h-24 resize-none`} value={form.description}
-              onChange={e => up('description', e.target.value)} placeholder="Вакансияны сүрөттөңүз..." required />
+              onChange={e => up('description', e.target.value)} placeholder={t.descriptionPlaceholder} required />
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div><label className={lbl}>WhatsApp</label><input className={inp} value={form.whatsapp} onChange={e => up('whatsapp', e.target.value)} placeholder="+996" /></div>
-            <div><label className={lbl}>Телефон</label><input className={inp} value={form.phone} onChange={e => up('phone', e.target.value)} placeholder="+996" /></div>
+            <div><label className={lbl}>{t.whatsapp}</label><input className={inp} value={form.whatsapp} onChange={e => up('whatsapp', e.target.value)} placeholder="+996" /></div>
+            <div><label className={lbl}>{t.phone}</label><input className={inp} value={form.phone} onChange={e => up('phone', e.target.value)} placeholder="+996" /></div>
           </div>
-          <div><label className={lbl}>Дарек</label><input className={inp} value={form.address} onChange={e => up('address', e.target.value)} placeholder="Бишкек, Чүй проспектиси" /></div>
+          <div><label className={lbl}>{t.address}</label><input className={inp} value={form.address} onChange={e => up('address', e.target.value)} placeholder={t.addressPlaceholder} /></div>
           <label className="flex items-center gap-2 cursor-pointer select-none">
             <input type="checkbox" checked={form.is_negotiable} onChange={e => up('is_negotiable', e.target.checked)} className="w-4 h-4 accent-indigo-500" />
-            <span className="text-slate-300 dark:text-slate-300 text-slate-600 text-sm">Келишим боюнча</span>
+            <span className="text-slate-300 dark:text-slate-300 text-slate-600 text-sm">{t.negotiable}</span>
           </label>
           {!form.is_negotiable && (
             <div className="grid grid-cols-2 gap-3">
-              <div><label className={lbl}>Баадан</label><input type="number" className={inp} value={form.salary_from} onChange={e => up('salary_from', e.target.value)} placeholder="5000" /></div>
-              <div><label className={lbl}>Баага чейин</label><input type="number" className={inp} value={form.salary_to} onChange={e => up('salary_to', e.target.value)} placeholder="15000" /></div>
+              <div><label className={lbl}>{t.salaryFrom}</label><input type="number" className={inp} value={form.salary_from} onChange={e => up('salary_from', e.target.value)} placeholder="5000" /></div>
+              <div><label className={lbl}>{t.salaryTo}</label><input type="number" className={inp} value={form.salary_to} onChange={e => up('salary_to', e.target.value)} placeholder="15000" /></div>
             </div>
           )}
           <button type="submit" disabled={saving}
             className="w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl py-3.5 font-bold text-base transition-all shadow-lg disabled:opacity-60 mt-1">
-            {saving ? 'Жарыяланууда...' : 'Жарыялоо →'}
+            {saving ? t.publishing : t.publish}
           </button>
         </form>
       </div>
@@ -138,6 +141,7 @@ const PostTab = memo(function PostTab({ showToast, onPosted }) {
 
 // ─── MY JOBS TAB ──────────────────────────────────────────────────────────────
 function MyJobsTab({ showToast }) {
+  const { t } = useLang();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editJob, setEditJob] = useState(null);
@@ -154,20 +158,20 @@ function MyJobsTab({ showToast }) {
   useEffect(() => { fetch(); }, [fetch]);
 
   const handleDelete = async (job) => {
-    if (!confirm('Вакансияны жок кылуу?')) return;
+    if (!confirm(t.deleteConfirm)) return;
     try {
       await api.delete(`/jobs/${job.id}/`);
-      showToast('Жок кылынды 🗑️');
+      showToast(t.deleted);
       fetch();
-    } catch { showToast('Ката болду'); }
+    } catch { showToast(t.error); }
   };
 
   const handleToggleActive = async (job) => {
     try {
       await api.patch(`/jobs/${job.id}/`, { active: !job.active });
-      showToast(job.active ? 'Вакансия жашырылды 🙈' : 'Вакансия активдүү! 🟢');
+      showToast(job.active ? t.hidden : t.activated);
       fetch();
-    } catch { showToast('Ката болду'); }
+    } catch { showToast(t.error); }
   };
 
   return (
@@ -175,7 +179,7 @@ function MyJobsTab({ showToast }) {
       {loading
         ? <div className="flex justify-center py-16"><Loader2 size={32} className="text-indigo-400 animate-spin" /></div>
         : jobs.length === 0
-          ? <div className="text-center py-16 text-slate-500 text-sm">Вакансияңыз жок</div>
+          ? <div className="text-center py-16 text-slate-500 text-sm">{t.noMyJobs}</div>
           : jobs.map(job => (
             <JobCard key={job.id} job={job} mode="my"
               onEdit={setEditJob} onDelete={handleDelete}
@@ -191,6 +195,7 @@ function MyJobsTab({ showToast }) {
 
 // ─── SAVED TAB ────────────────────────────────────────────────────────────────
 function SavedTab({ showToast }) {
+  const { t } = useLang();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -209,7 +214,7 @@ function SavedTab({ showToast }) {
     try {
       await api.post(`/jobs/${job.id}/bookmark/`);
       fetch();
-      showToast('Сакталгандан өчүрүлдү');
+      showToast(t.removedFromSaved);
     } catch {}
   };
 
@@ -218,7 +223,7 @@ function SavedTab({ showToast }) {
       {loading
         ? <div className="flex justify-center py-16"><Loader2 size={32} className="text-indigo-400 animate-spin" /></div>
         : jobs.length === 0
-          ? <div className="text-center py-16 text-slate-500 text-sm">Сакталган вакансия жок</div>
+          ? <div className="text-center py-16 text-slate-500 text-sm">{t.noSaved}</div>
           : jobs.map(job => (
             <JobCard key={job.id} job={job} mode="saved" onBookmark={handleBookmark} showToast={showToast} />
           ))
@@ -230,6 +235,7 @@ function SavedTab({ showToast }) {
 // ─── PROFILE TAB ──────────────────────────────────────────────────────────────
 function ProfileTab({ showToast }) {
   const { user, logout, refreshUser, BASE_URL } = useAuth();
+  const { t, lang, toggleLang } = useLang();
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
   const [saving, setSaving] = useState(false);
@@ -247,8 +253,8 @@ function ProfileTab({ showToast }) {
     try {
       await api.patch('/users/profile/', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       await refreshUser();
-      showToast('Сүрөт жаңыланды! 📸');
-    } catch { showToast('Ката болду'); }
+      showToast(t.photoUpdated);
+    } catch { showToast(t.error); }
   };
 
   const handleSave = async () => {
@@ -256,8 +262,8 @@ function ProfileTab({ showToast }) {
     try {
       await api.patch('/users/profile/', { name, phone });
       await refreshUser();
-      showToast('Сакталды ✅');
-    } catch { showToast('Ката болду'); }
+      showToast(t.saved2);
+    } catch { showToast(t.error); }
     finally { setSaving(false); }
   };
 
@@ -265,8 +271,8 @@ function ProfileTab({ showToast }) {
 
   return (
     <div className="overflow-y-auto p-4 pb-8">
-      <h2 className="text-white dark:text-white text-slate-800 font-bold text-xl mb-5">Профиль</h2>
-      <div className="bg-slate-800/60 dark:bg-slate-800/60 bg-white border border-indigo-500/30 dark:border-indigo-500/30 border-gray-200 rounded-3xl p-5 shadow-xl">
+      <h2 className="dark:text-white text-slate-800 font-bold text-xl mb-5">{t.profileTitle}</h2>
+      <div className="bg-slate-800/60 dark:bg-slate-800/60 bg-white border dark:border-indigo-500/30 border-gray-200 rounded-3xl p-5 shadow-xl">
         {/* Avatar */}
         <div className="flex flex-col items-center mb-6">
           <button onClick={() => fileRef.current.click()} className="relative group">
@@ -279,40 +285,47 @@ function ProfileTab({ showToast }) {
               <Camera size={20} className="text-white" />
             </div>
           </button>
-          <p className="text-slate-400 dark:text-slate-400 text-gray-500 text-xs mt-2">Сүрөтүңүздү өзгөртүү</p>
+          <p className="text-slate-400 text-xs mt-2">{t.changePhoto}</p>
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatar} />
         </div>
 
         {/* Fields */}
         <div className="flex flex-col gap-3 mb-5">
           <div>
-            <label className="block text-xs text-indigo-300 dark:text-indigo-300 text-indigo-700 mb-1.5 uppercase tracking-wide">Аты-жөнү</label>
+            <label className="block text-xs dark:text-indigo-300 text-indigo-700 mb-1.5 uppercase tracking-wide">{t.fullName}</label>
             <input className={inp} value={name} onChange={e => setName(e.target.value)} />
           </div>
           <div>
-            <label className="block text-xs text-indigo-300 dark:text-indigo-300 text-indigo-700 mb-1.5 uppercase tracking-wide">Телефон</label>
+            <label className="block text-xs dark:text-indigo-300 text-indigo-700 mb-1.5 uppercase tracking-wide">{t.phone}</label>
             <input className={inp} value={phone} onChange={e => setPhone(e.target.value)} />
           </div>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3 mb-5">
-          {[['Вакансиялар', user?.jobs_count || 0], ['Сакталган', user?.bookmarks_count || 0]].map(([label, count]) => (
-            <div key={label} className="bg-slate-900/60 dark:bg-slate-900/60 bg-gray-50 rounded-2xl p-3 text-center border border-slate-700/50 dark:border-slate-700/50 border-gray-200">
+          {[[t.vacancies, user?.jobs_count || 0], [t.bookmarks, user?.bookmarks_count || 0]].map(([label, count]) => (
+            <div key={label} className="dark:bg-slate-900/60 bg-gray-50 rounded-2xl p-3 text-center border dark:border-slate-700/50 border-gray-200">
               <div className="text-2xl font-bold text-indigo-400">{count}</div>
               <div className="text-xs text-slate-500 mt-1">{label}</div>
             </div>
           ))}
         </div>
 
-        <button onClick={handleSave} disabled={saving}
-          className="w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl py-3 font-bold transition-all disabled:opacity-60 mb-3">
-          {saving ? 'Сакталуда...' : 'Сактоо'}
+        {/* Language toggle */}
+        <button onClick={toggleLang}
+          className="w-full flex items-center justify-center gap-2 dark:bg-slate-700/50 bg-gray-100 hover:bg-indigo-500/10 dark:text-slate-200 text-slate-700 rounded-xl py-2.5 font-medium transition-all mb-3 text-sm">
+          🌐 {t.language}: <span className="font-bold">{lang === 'ky' ? 'Кыргызча' : 'Русский'}</span>
+          <span className="text-indigo-400 ml-1">→ {lang === 'ky' ? 'Русский' : 'Кыргызча'}</span>
         </button>
 
-        <button onClick={() => { if (confirm('Чыгышыңызды ырастайсызбы?')) logout(); }}
+        <button onClick={handleSave} disabled={saving}
+          className="w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl py-3 font-bold transition-all disabled:opacity-60 mb-3">
+          {saving ? t.saving : t.save}
+        </button>
+
+        <button onClick={() => { if (confirm(t.logoutConfirm)) logout(); }}
           className="w-full flex items-center justify-center gap-2 border border-red-500/50 hover:bg-red-500/10 text-red-400 rounded-xl py-3 font-medium transition-all">
-          <LogOut size={16} /> Чыгуу
+          <LogOut size={16} /> {t.logout}
         </button>
       </div>
     </div>
@@ -322,6 +335,7 @@ function ProfileTab({ showToast }) {
 // ─── MAIN SCREEN ──────────────────────────────────────────────────────────────
 export default function MainScreen() {
   const { user, logout, darkMode, toggleTheme } = useAuth();
+  const { t } = useLang();
   const [tab, setTab] = useState('search');
   const [toast, setToast] = useState('');
   const [jobs, setJobs] = useState([]);
@@ -361,11 +375,11 @@ export default function MainScreen() {
   }, [showToast, fetchJobs]);
 
   const TABS = [
-    { id: 'search', icon: Search, label: 'Издөө' },
-    { id: 'post', icon: Plus, label: 'Жарыялоо' },
-    { id: 'my', icon: Briefcase, label: 'Менин' },
-    { id: 'saved', icon: Bookmark, label: 'Сакталган' },
-    { id: 'profile', icon: User, label: 'Профиль' },
+    { id: 'search', icon: Search, label: t.search },
+    { id: 'post', icon: Plus, label: t.post },
+    { id: 'my', icon: Briefcase, label: t.myJobs },
+    { id: 'saved', icon: Bookmark, label: t.saved },
+    { id: 'profile', icon: User, label: t.profile },
   ];
 
   return (
